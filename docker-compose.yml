@@ -1,0 +1,20 @@
+version: "3"
+services:
+  trailer_service:
+    build: .
+    links: 
+      - trailer_db
+    hostname: trailer_service_in_container
+    volumes:
+      - ./:/douban-trailer
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+    ports:
+      - "17442:17442"
+  trailer_db:
+    image: mongo
+    volumes:
+      - "/data/db:/data/db"
+    restart: always

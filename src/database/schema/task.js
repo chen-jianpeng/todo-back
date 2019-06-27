@@ -1,0 +1,78 @@
+const { Schema, model } = require("mongoose");
+const { ObjectId } = Schema.Types;
+
+const TaskSchema = new Schema({
+  content: String,
+  status: {
+    type: Boolean,
+    default: false
+  },
+  deadline: Date,
+  level: {
+    type: Number,
+    default: 0
+  },
+  discription: String,
+  executor: [
+    {
+      type: ObjectId,
+      ref: "User"
+    }
+  ],
+  follower: [
+    {
+      type: ObjectId,
+      ref: "User"
+    }
+  ],
+  attachment: [
+    {
+      type: ObjectId,
+      ref: "Attachment"
+    }
+  ],
+  comments: [
+    {
+      type: ObjectId,
+      ref: "Comment"
+    }
+  ],
+  activities: [
+    {
+      type: ObjectId,
+      ref: "Activity"
+    }
+  ],
+  subTasks: [
+    {
+      type: ObjectId,
+      ref: "SubTask"
+    }
+  ],
+
+  creator: {
+    type: ObjectId,
+    ref: "User"
+  },
+  meta: {
+    createdAt: {
+      type: Date,
+      default: Date.now()
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now()
+    }
+  }
+});
+
+TaskSchema.pre("save", function(next) {
+  if (this.isNew) {
+    this.meta.createdAt = this.meta.updatedAt = Date.now();
+  } else {
+    this.meta.updatedAt = Date.now();
+  }
+  next();
+});
+
+model("Task", TaskSchema);
