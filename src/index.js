@@ -5,6 +5,7 @@ import R from "ramda";
 import chalk from "chalk";
 import { connect, initSchema } from "./database/init";
 import { resolve } from "path";
+import general from "./middleware/general";
 
 const MIDDLEWARES = ["router"];
 
@@ -24,6 +25,8 @@ const useMiddlewares = app => {
 
   const app = new Koa();
   app.use(cors());
+
+  general(app);
 
   const port = 17442;
 

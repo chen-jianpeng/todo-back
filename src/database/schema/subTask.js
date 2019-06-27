@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 const ObjectId = Schema.Types.ObjectId;
 
-const CategorySchema = new Schema({
+const SubTaskSchema = new Schema({
   content: String,
   status: {
     type: Boolean,
@@ -24,7 +24,7 @@ const CategorySchema = new Schema({
   }
 });
 
-CategorySchema.pre("save", function(next) {
+SubTaskSchema.pre("save", function(next) {
   if (this.isNew) {
     this.meta.createdAt = this.meta.updatedAt = Date.now();
   } else {
@@ -33,4 +33,4 @@ CategorySchema.pre("save", function(next) {
   next();
 });
 
-model("Category", CategorySchema);
+model("SubTask", SubTaskSchema);

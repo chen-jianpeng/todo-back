@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 const { ObjectId } = Schema.Types;
 
-const VideoSchema = new Schema({
+const AttachmentSchema = new Schema({
   movie: {
     type: ObjectId,
     ref: "Movie"
@@ -24,7 +24,7 @@ const VideoSchema = new Schema({
   }
 });
 
-VideoSchema.pre("save", function(next) {
+AttachmentSchema.pre("save", function(next) {
   if (this.isNew) {
     this.meta.createdAt = this.meta.updatedAt = Date.now();
   } else {
@@ -33,4 +33,4 @@ VideoSchema.pre("save", function(next) {
   next();
 });
 
-model("Video", VideoSchema);
+model("Attachment", AttachmentSchema);

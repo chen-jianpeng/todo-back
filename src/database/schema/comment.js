@@ -1,7 +1,7 @@
 const { Schema, model } = require("mongoose");
 const ObjectId = Schema.Types.ObjectId;
 
-const CategorySchema = new Schema({
+const CommentSchema = new Schema({
   content: String,
   attachment: [
     {
@@ -32,7 +32,7 @@ const CategorySchema = new Schema({
   }
 });
 
-CategorySchema.pre("save", function(next) {
+CommentSchema.pre("save", function(next) {
   if (this.isNew) {
     this.meta.createdAt = this.meta.updatedAt = Date.now();
   } else {
@@ -41,4 +41,4 @@ CategorySchema.pre("save", function(next) {
   next();
 });
 
-model("Category", CategorySchema);
+model("Comment", CommentSchema);
