@@ -12,7 +12,7 @@ const MAX_LOGIN_ATTEMPTS = 5; // 最大错误次数
 const LOCK_TIME = 2 * 60 * 60 * 1000; // 登陆锁定时间
 
 const UserSchema = new Schema({
-  userName: {
+  name: {
     unique: true,
     require: true,
     type: String
@@ -40,6 +40,12 @@ const UserSchema = new Schema({
     require: true,
     default: 0
   },
+  projects: [
+    {
+      type: ObjectId,
+      ref: "project"
+    }
+  ],
 
   meta: {
     createdAt: {

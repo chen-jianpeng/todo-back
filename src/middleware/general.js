@@ -1,13 +1,16 @@
 import bodyParser from "koa-bodyparser";
+import { accessLogger, logger } from "../lib/log4";
 import session from "koa-session";
-import logger from "koa-logger";
 
 const addBodyParser = app => {
   app.use(bodyParser());
 };
 
-const addLogger = app => {
-  app.use(logger());
+const addLog4 = app => {
+  app.use(accessLogger());
+  app.on("error", err => {
+    logger.error(err);
+  });
 };
 
 const addSession = app => {
@@ -29,6 +32,6 @@ const addSession = app => {
 
 export default app => {
   addBodyParser(app);
-  addLogger(app);
+  addLog4(app);
   addSession(app);
 };

@@ -6,6 +6,7 @@ import chalk from "chalk";
 import { connect, initSchema } from "./database/init";
 import { resolve } from "path";
 import general from "./middleware/general";
+import { logger } from "./lib/log4";
 
 const MIDDLEWARES = ["router"];
 
@@ -33,6 +34,6 @@ const useMiddlewares = app => {
   await useMiddlewares(app);
 
   app.listen(port, () => {
-    console.log(`Open ${chalk.green("http://localhost:" + port)}`);
+    logger.info(`Open ${chalk.green("http://localhost:" + port)}`);
   });
 })();

@@ -1,0 +1,6 @@
+[2019-07-04T17:07:26.506] [INFO] access - ::1 - - "DELETE /project/5d15cd13b664db61b0558d28 HTTP/1.1" 200 54 "" "PostmanRuntime/7.15.0"
+[2019-07-04T17:09:28.151] [INFO] access - ::1 - - "DELETE /project/5d15cd13b664db61b0558d28 HTTP/1.1" 200 54 "" "PostmanRuntime/7.15.0"
+[2019-07-04T17:11:07.968] [INFO] access - ::1 - - "DELETE /project/5d15cd13b664db61b0558d28 HTTP/1.1" 200 64 "" "PostmanRuntime/7.15.0"
+[2019-07-04T17:28:48.578] [INFO] access - ::1 - - "DELETE /project/5d15cd13b664db61b0558d28 HTTP/1.1" 200 54 "" "PostmanRuntime/7.15.0"
+[2019-07-04T17:29:16.566] [INFO] access - ::1 - - "DELETE /project/5d15cd13b664db61b0558d28 HTTP/1.1" 200 64 "" "PostmanRuntime/7.15.0"
+[2019-07-04T17:30:00.200] [INFO] access - ::1 - - "DELETE /project/5d15cd13b664db61b0558d28 HTTP/1.1" 200 64 "" "PostmanRuntime/7.15.0"

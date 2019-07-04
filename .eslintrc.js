@@ -14,7 +14,6 @@ module.exports = {
     "plugin:prettier/recommended"
   ],
   "rules": {
-    "prettier/prettier": "error",
-    "no-console": "off"
+    "prettier/prettier": "error"
   }
 };

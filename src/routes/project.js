@@ -1,39 +1,47 @@
-import { Controller, Get, Post } from "../decorator/router";
-import { getProjects, getProjectById, saveProject } from "../service/project";
+import { Controller, Get, Post, Put, Delete } from "../decorator/router";
+import projectService from "../service/project";
 
 @Controller("/project")
 class ProjectRouter {
   @Get("/")
-  async getProjects(ctx) {
+  async getByQuery(ctx) {
     const { name } = ctx.query;
-    const projects = await getProjects(name);
+    const datas = await projectService.getByQuery(name);
 
-    ctx.body = {
-      data: projects,
-      success: true
-    };
+    ctx.body = datas;
   }
 
   @Get("/:id")
-  async getProjectById(ctx) {
+  async getById(ctx) {
     const id = ctx.params.id;
-    const project = await getProjectById(id);
+    const data = await projectService.getById(id);
 
-    ctx.body = {
-      data: project,
-      success: true
-    };
+    ctx.body = data;
   }
 
   @Post("")
-  async saveProject(ctx) {
+  async save(ctx) {
     const params = ctx.request.body;
-    const project = await saveProject(params);
+    const data = await projectService.save(params);
 
-    ctx.body = {
-      data: project,
-      success: true
-    };
+    ctx.body = data;
+  }
+
+  @Put("/:id")
+  async update(ctx) {
+    const id = ctx.params.id;
+    const params = ctx.request.body;
+    const data = await projectService.update(id, params);
+
+    ctx.body = data;
+  }
+
+  @Delete("/:id")
+  async delete(ctx) {
+    const id = ctx.params.id;
+    const data = await projectService.delete(id);
+
+    ctx.body = data;
   }
 }
 

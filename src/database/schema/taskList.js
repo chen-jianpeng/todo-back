@@ -6,12 +6,10 @@ const TaskListSchema = new Schema({
     unique: true,
     type: String
   },
-  tasks: [
-    {
-      type: ObjectId,
-      ref: "Task"
-    }
-  ],
+  project: {
+    type: ObjectId,
+    ref: "Project"
+  },
 
   creator: {
     type: ObjectId,
