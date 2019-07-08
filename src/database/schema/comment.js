@@ -2,24 +2,32 @@ const { Schema, model } = require("mongoose");
 const ObjectId = Schema.Types.ObjectId;
 
 const CommentSchema = new Schema({
-  content: String,
+  content: {
+    type: String,
+    required: true
+  },
+  reminder: [
+    {
+      type: ObjectId,
+      ref: "User"
+    }
+  ],
   attachment: [
     {
       type: ObjectId,
       ref: "Attachment"
     }
   ],
-  reminders: [
-    {
-      type: ObjectId,
-      ref: "User"
-    }
-  ],
+  task: {
+    type: ObjectId,
+    ref: "Task"
+  },
 
   creator: {
     type: ObjectId,
     ref: "User"
   },
+
   meta: {
     createdAt: {
       type: Date,

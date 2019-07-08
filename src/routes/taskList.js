@@ -2,16 +2,13 @@ import { Controller, Get, Post, Put, Delete } from "../decorator/router";
 import taskListService from "../service/taskList";
 
 @Controller("/taskList")
-class ProjectRouter {
+class TaskListRouter {
   @Get("/")
   async getByQuery(ctx) {
     const { name } = ctx.query;
-    const datas = await taskListService.getByQuery(name);
+    const data = await taskListService.getByQuery(name);
 
-    ctx.body = {
-      data: datas,
-      success: true
-    };
+    ctx.body = data;
   }
 
   @Get("/:id")
@@ -19,10 +16,7 @@ class ProjectRouter {
     const id = ctx.params.id;
     const data = await taskListService.getById(id);
 
-    ctx.body = {
-      data,
-      success: true
-    };
+    ctx.body = data;
   }
 
   @Post("")
@@ -30,10 +24,7 @@ class ProjectRouter {
     const params = ctx.request.body;
     const data = await taskListService.save(params);
 
-    ctx.body = {
-      data,
-      success: true
-    };
+    ctx.body = data;
   }
 
   @Put("/:id")
@@ -42,10 +33,7 @@ class ProjectRouter {
     const params = ctx.request.body;
     const data = await taskListService.update(id, params);
 
-    ctx.body = {
-      data,
-      success: true
-    };
+    ctx.body = data;
   }
 
   @Delete("/:id")
@@ -53,11 +41,8 @@ class ProjectRouter {
     const id = ctx.params.id;
     const data = await taskListService.delete(id);
 
-    ctx.body = {
-      data,
-      success: true
-    };
+    ctx.body = data;
   }
 }
 
-export default ProjectRouter;
+export default TaskListRouter;

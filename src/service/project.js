@@ -27,10 +27,10 @@ export default {
    * @returns
    */
   async getById(id) {
-    const projects = await Project.findById(id)
+    const project = await Project.findById(id)
       .populate("taskLists")
       .populate("creator");
-    return new Response(2000, projects);
+    return new Response(2000, project);
   },
 
   /**
@@ -74,8 +74,8 @@ export default {
         return new Response(4001);
       }
 
-      if (project.taskLists.length > 0) {
-        return new Response(4000);
+      if (project.taskLists && project.taskLists.length > 0) {
+        return new Response(4002);
       }
 
       const removedProject = await new Project(project).remove();

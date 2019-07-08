@@ -4,7 +4,8 @@ const ObjectId = Schema.Types.ObjectId;
 const ProjectSchema = new Schema({
   name: {
     unique: true,
-    type: String
+    type: String,
+    required: true
   },
 
   taskLists: [

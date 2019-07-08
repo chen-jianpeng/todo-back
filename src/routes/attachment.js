@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Put, Delete } from "../decorator/router";
-import projectService from "../service/project";
+import attachmentService from "../service/attachment";
 
-@Controller("/project")
-class ProjectRouter {
+@Controller("/attachment")
+class AttachmentRouter {
   @Get("/")
   async getByQuery(ctx) {
     const { name } = ctx.query;
-    const data = await projectService.getByQuery(name);
+    const data = await attachmentService.getByQuery(name);
 
     ctx.body = data;
   }
@@ -14,15 +14,16 @@ class ProjectRouter {
   @Get("/:id")
   async getById(ctx) {
     const id = ctx.params.id;
-    const data = await projectService.getById(id);
+    const data = await attachmentService.getById(id);
 
     ctx.body = data;
   }
 
   @Post("")
   async save(ctx) {
+    const file = ctx.request.files.file;
     const params = ctx.request.body;
-    const data = await projectService.save(params);
+    const data = await attachmentService.save(file, params);
 
     ctx.body = data;
   }
@@ -31,7 +32,7 @@ class ProjectRouter {
   async update(ctx) {
     const id = ctx.params.id;
     const params = ctx.request.body;
-    const data = await projectService.update(id, params);
+    const data = await attachmentService.update(id, params);
 
     ctx.body = data;
   }
@@ -39,10 +40,10 @@ class ProjectRouter {
   @Delete("/:id")
   async delete(ctx) {
     const id = ctx.params.id;
-    const data = await projectService.delete(id);
+    const data = await attachmentService.delete(id);
 
     ctx.body = data;
   }
 }
 
-export default ProjectRouter;
+export default AttachmentRouter;

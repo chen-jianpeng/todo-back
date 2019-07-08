@@ -2,16 +2,24 @@ const { Schema, model } = require("mongoose");
 const ObjectId = Schema.Types.ObjectId;
 
 const SubTaskSchema = new Schema({
-  content: String,
+  name: {
+    type: String,
+    required: true
+  },
   status: {
     type: Boolean,
     default: false
+  },
+  task: {
+    type: ObjectId,
+    ref: "Task"
   },
 
   creator: {
     type: ObjectId,
     ref: "User"
   },
+
   meta: {
     createdAt: {
       type: Date,

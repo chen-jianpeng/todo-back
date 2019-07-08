@@ -2,7 +2,10 @@ const { Schema, model } = require("mongoose");
 const { ObjectId } = Schema.Types;
 
 const TaskSchema = new Schema({
-  content: String,
+  name: {
+    type: String,
+    required: true
+  },
   status: {
     type: Boolean,
     default: false
@@ -49,6 +52,12 @@ const TaskSchema = new Schema({
       ref: "SubTask"
     }
   ],
+
+  taskList: {
+    type: ObjectId,
+    ref: "TaskList",
+    required: true
+  },
 
   creator: {
     type: ObjectId,

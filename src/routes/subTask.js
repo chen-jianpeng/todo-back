@@ -1,12 +1,12 @@
 import { Controller, Get, Post, Put, Delete } from "../decorator/router";
-import projectService from "../service/project";
+import subTaskService from "../service/subTask";
 
-@Controller("/project")
-class ProjectRouter {
+@Controller("/subTask")
+class SubTaskRouter {
   @Get("/")
   async getByQuery(ctx) {
     const { name } = ctx.query;
-    const data = await projectService.getByQuery(name);
+    const data = await subTaskService.getByQuery(name);
 
     ctx.body = data;
   }
@@ -14,7 +14,7 @@ class ProjectRouter {
   @Get("/:id")
   async getById(ctx) {
     const id = ctx.params.id;
-    const data = await projectService.getById(id);
+    const data = await subTaskService.getById(id);
 
     ctx.body = data;
   }
@@ -22,7 +22,7 @@ class ProjectRouter {
   @Post("")
   async save(ctx) {
     const params = ctx.request.body;
-    const data = await projectService.save(params);
+    const data = await subTaskService.save(params);
 
     ctx.body = data;
   }
@@ -31,7 +31,7 @@ class ProjectRouter {
   async update(ctx) {
     const id = ctx.params.id;
     const params = ctx.request.body;
-    const data = await projectService.update(id, params);
+    const data = await subTaskService.update(id, params);
 
     ctx.body = data;
   }
@@ -39,10 +39,10 @@ class ProjectRouter {
   @Delete("/:id")
   async delete(ctx) {
     const id = ctx.params.id;
-    const data = await projectService.delete(id);
+    const data = await subTaskService.delete(id);
 
     ctx.body = data;
   }
 }
 
-export default ProjectRouter;
+export default SubTaskRouter;

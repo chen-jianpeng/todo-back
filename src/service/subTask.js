@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 import { logger } from "../lib/log4";
 import Response from "../lib/response";
 
-const TaskList = mongoose.model("TaskList");
-const Project = mongoose.model("Project");
+const SubTask = mongoose.model("SubTask");
+const Task = mongoose.model("Task");
 
 export default {
   /**
@@ -17,22 +17,19 @@ export default {
     if (name) {
       query.name = name;
     }
-    const taskLists = await TaskList.find(query);
-    return new Response(2000, taskLists);
+    const subTasks = await SubTask.find(query);
+    return new Response(2000, subTasks);
   },
 
   /**
    * 根据ID查询
    *
-   * @param {*} uid
+   * @param {*} id
    * @returns
    */
-  async getById(uid) {
-    const taskList = await TaskList.findById(uid)
-      .populate("project")
-      .populate("tasks")
-      .populate("creator");
-    return new Response(2000, taskList);
+  async getById(id) {
+    const subTask = await SubTask.findById(id).populate("creator");
+    return new Response(2000, subTask);
   },
 
   /**
@@ -44,16 +41,17 @@ export default {
     const session = await mongoose.startSession();
     await session.startTransaction();
     try {
-      let taskList = new TaskList(params);
-      let taskListRes = await taskList.save();
-      await Project.findByIdAndUpdate(params.project, {
-        $addToSet: { taskLists: [taskListRes._id] }
+      let subTask = new SubTask(params);
+      let subTaskRes = await subTask.save();
+
+      await Task.findByIdAndUpdate(params.task, {
+        $addToSet: { subTasks: [subTaskRes._id] }
       });
 
       await session.commitTransaction();
       session.endSession();
 
-      return new Response(2000, taskListRes);
+      return new Response(2000, subTaskRes);
     } catch (error) {
       await session.abortTransaction();
       session.endSession();
@@ -73,8 +71,8 @@ export default {
       runValidators: true,
       new: true
     };
-    const taskList = await TaskList.findByIdAndUpdate(id, params, options);
-    return new Response(2000, taskList);
+    const subTask = await SubTask.findByIdAndUpdate(id, params, options);
+    return new Response(2000, subTask);
   },
 
   /**
@@ -88,30 +86,25 @@ export default {
     await session.startTransaction();
 
     try {
-      let taskList = await TaskList.findById(id);
+      let subTask = await SubTask.findById(id);
 
-      if (!taskList) {
+      if (!subTask) {
         return new Response(4001);
       }
 
-      if (taskList.tasks && taskList.tasks.length > 0) {
-        return new Response(4002);
-      }
-
-      const removedTaskList = await new TaskList(taskList).remove();
-
-      await Project.findByIdAndUpdate(taskList.project, {
-        $pull: { taskLists: { $in: [taskList._id] } }
+      // 删除子任务
+      const removedSubTask = await new SubTask(subTask).remove();
+      // 删除任务中的子任务
+      await Task.findByIdAndUpdate(subTask.task, {
+        $pull: { subTasks: { $in: [subTask._id] } }
       });
 
       await session.commitTransaction();
       session.endSession();
-
-      return new Response(2000, removedTaskList);
+      return new Response(2000, removedSubTask);
     } catch (error) {
       await session.abortTransaction();
       session.endSession();
-
       logger.error(error);
       return new Response(5000, error.message);
     }

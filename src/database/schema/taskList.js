@@ -3,13 +3,28 @@ const ObjectId = Schema.Types.ObjectId;
 
 const TaskListSchema = new Schema({
   name: {
-    unique: true,
-    type: String
+    type: String,
+    required: true
   },
   project: {
     type: ObjectId,
-    ref: "Project"
+    ref: "Project",
+    required: true,
+    validate: {
+      validator: async function(id) {
+        const Project = model("Project");
+        let project = await Project.findById(id);
+        return !!project;
+      },
+      message: props => `项目id=${props.value}不存在`
+    }
   },
+  tasks: [
+    {
+      type: ObjectId,
+      ref: "Task"
+    }
+  ],
 
   creator: {
     type: ObjectId,

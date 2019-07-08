@@ -2,7 +2,14 @@ const { Schema, model } = require("mongoose");
 const ObjectId = Schema.Types.ObjectId;
 
 const ActivitySchema = new Schema({
-  content: String,
+  content: {
+    type: String,
+    required: true
+  },
+  task: {
+    type: ObjectId,
+    ref: "Task"
+  },
 
   creator: {
     type: ObjectId,

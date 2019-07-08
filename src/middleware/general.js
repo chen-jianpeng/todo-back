@@ -1,9 +1,16 @@
-import bodyParser from "koa-bodyparser";
+import koaBody from "koa-body";
 import { accessLogger, logger } from "../lib/log4";
 import session from "koa-session";
 
 const addBodyParser = app => {
-  app.use(bodyParser());
+  app.use(
+    koaBody({
+      multipart: true,
+      formidable: {
+        maxFileSize: 200 * 1024 * 1024 // 设置上传文件大小最大限制，默认2M
+      }
+    })
+  );
 };
 
 const addLog4 = app => {
