@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { logger } from "../lib/log4";
 import Response from "../lib/response";
+import ActivityService from "../service/activity";
 
 const Task = mongoose.model("Task");
 const TaskList = mongoose.model("TaskList");
@@ -25,17 +26,17 @@ export default {
   /**
    * 根据ID查询
    *
-   * @param {*} uid
+   * @param {*} id
    * @returns
    */
-  async getById(uid) {
-    const task = await Task.findById(uid)
+  async getById(id) {
+    const task = await Task.findById(id)
       .populate("subTasks")
-      .populate("attachment")
+      .populate("attachments")
       .populate("comments")
       .populate("activities")
-      .populate("executor")
-      .populate("follower")
+      .populate("executors")
+      .populate("followers")
       .populate("creator");
     return new Response(2000, task);
   },
@@ -66,6 +67,10 @@ export default {
     }
   },
 
+  async createActivity() {
+    // TODO
+  },
+
   /**
    *  更新
    *
@@ -78,8 +83,44 @@ export default {
       runValidators: true,
       new: true
     };
-    const task = await Task.findByIdAndUpdate(id, params, options);
-    return new Response(2000, task);
+
+    try {
+      let beforeTask = Task.findById(id);
+      let afterTask = await new Task(beforeTask).update(params, options);
+
+      await this.createActivity(beforeTask, params);
+
+      return new Response(2000, afterTask);
+    } catch (error) {
+      logger.error(error);
+      return new Response(5000, error);
+    }
+  },
+
+  async updateSubTask(id, subTasks, isInsert = true) {
+    let options = {
+      runValidators: true,
+      new: true
+    };
+
+    try {
+      let beforeTask = await Task.findById(id);
+      let afterTask;
+      if (isInsert) {
+        afterTask = await new Task(beforeTask).update({
+          $pull: { subTasks: { $in: subTasks } }
+        });
+      } else {
+        afterTask = await new Task(beforeTask).update({ subTasks }, options);
+      }
+
+      await this.createActivity(beforeTask, subTasks);
+
+      return new Response(2000, afterTask);
+    } catch (error) {
+      logger.error(error);
+      return new Response(5000, error);
+    }
   },
 
   /**

@@ -40,12 +40,6 @@ const UserSchema = new Schema({
     require: true,
     default: 0
   },
-  projects: [
-    {
-      type: ObjectId,
-      ref: "project"
-    }
-  ],
 
   meta: {
     createdAt: {

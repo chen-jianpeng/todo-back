@@ -42,17 +42,15 @@ export default {
    * @param {*} params
    */
   async save(file, params) {
-    const type = params.type;
+    const { type, project, task, comment } = params;
 
     let options = {
       name: file.name,
-      type
+      type,
+      project,
+      task,
+      comment
     };
-    options[type] = params[type];
-
-    if (!options[type]) {
-      return new Response(4000);
-    }
 
     // 保存图片文件
     let uploadRes = upload(file, type);
@@ -62,28 +60,6 @@ export default {
       return new Response(5000, uploadRes.error);
     }
 
-    // 处理不同type的记录
-    async function handleType(id, type, parentId) {
-      let Model;
-      switch (type) {
-        case "project":
-          Model = mongoose.model("Project");
-          break;
-        case "task":
-          Model = mongoose.model("Task");
-          break;
-        case "comment":
-          Model = mongoose.model("Comment");
-
-          break;
-      }
-      if (Model) {
-        await Model.findByIdAndUpdate(parentId, {
-          $addToSet: { attachment: [id] }
-        });
-      }
-    }
-
     const session = await mongoose.startSession();
     await session.startTransaction();
     try {
@@ -91,7 +67,25 @@ export default {
       let attachment = new Attachment(options);
       let attachmentRes = await attachment.save();
 
-      await handleType(attachmentRes._uid, type, options[type]);
+      // 更新关联项
+      if (project) {
+        const Project = mongoose.model("Project");
+        await Project.findByIdAndUpdate(project, {
+          $addToSet: { attachments: [attachmentRes._id] }
+        });
+      }
+      if (task) {
+        const Task = mongoose.model("Task");
+        await Task.findByIdAndUpdate(task, {
+          $addToSet: { attachments: [attachmentRes._id] }
+        });
+      }
+      if (comment) {
+        const Comment = mongoose.model("Comment");
+        await Comment.findByIdAndUpdate(comment, {
+          $addToSet: { attachments: [attachmentRes._id] }
+        });
+      }
 
       await session.commitTransaction();
       session.endSession();

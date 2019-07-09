@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { logger } from "../lib/log4";
 import Response from "../lib/response";
 
-const Project = mongoose.model("Project");
+const Activity = mongoose.model("Activity");
 
 export default {
   /**
@@ -16,8 +16,8 @@ export default {
     if (name) {
       query.name = name;
     }
-    const projects = await Project.find(query);
-    return new Response(2000, projects);
+    const activitys = await Activity.find(query);
+    return new Response(2000, activitys);
   },
 
   /**
@@ -27,11 +27,11 @@ export default {
    * @returns
    */
   async getById(id) {
-    const project = await Project.findById(id)
+    const activity = await Activity.findById(id)
       .populate("taskLists")
       .populate("attachments")
       .populate("creator");
-    return new Response(2000, project);
+    return new Response(2000, activity);
   },
 
   /**
@@ -40,8 +40,8 @@ export default {
    * @param {*} params
    */
   async save(params) {
-    let project = new Project(params);
-    let res = await project.save();
+    let activity = new Activity(params);
+    let res = await activity.save();
     return new Response(2000, res);
   },
 
@@ -57,8 +57,8 @@ export default {
       runValidators: true,
       new: true
     };
-    const project = await Project.findByIdAndUpdate(id, params, options);
-    return new Response(2000, project);
+    const activity = await Activity.findByIdAndUpdate(id, params, options);
+    return new Response(2000, activity);
   },
 
   /**
@@ -69,18 +69,18 @@ export default {
    */
   async delete(id) {
     try {
-      let project = await Project.findById(id);
+      let activity = await Activity.findById(id);
 
-      if (!project) {
+      if (!activity) {
         return new Response(4001);
       }
 
-      if (project.taskLists && project.taskLists.length > 0) {
+      if (activity.taskLists && activity.taskLists.length > 0) {
         return new Response(4002);
       }
 
-      const removedProject = await new Project(project).remove();
-      return new Response(2000, removedProject);
+      const removedActivity = await new Activity(activity).remove();
+      return new Response(2000, removedActivity);
     } catch (error) {
       logger.error(error);
       return new Response(5000, error.message);

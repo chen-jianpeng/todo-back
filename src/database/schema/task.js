@@ -16,19 +16,19 @@ const TaskSchema = new Schema({
     default: 0
   },
   discription: String,
-  executor: [
+  executors: [
     {
       type: ObjectId,
       ref: "User"
     }
   ],
-  follower: [
+  followers: [
     {
       type: ObjectId,
       ref: "User"
     }
   ],
-  attachment: [
+  attachments: [
     {
       type: ObjectId,
       ref: "Attachment"

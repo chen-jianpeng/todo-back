@@ -1,20 +1,36 @@
 const { Schema, model } = require("mongoose");
 const ObjectId = Schema.Types.ObjectId;
 
+const types = ["other", "create", "delete", "update", "search"];
+
 const ActivitySchema = new Schema({
-  content: {
+  type: {
+    type: String,
+    required: true,
+    validate: {
+      validator: async function(type) {
+        return types.includes(type);
+      },
+      message: type => `活动类型出错。只能是${types}中的，当前为${type}`
+    }
+  },
+  target: {
     type: String,
     required: true
   },
-  task: {
-    type: ObjectId,
-    ref: "Task"
+  before: {
+    type: String
+  },
+  after: {
+    type: String
   },
 
   creator: {
     type: ObjectId,
-    ref: "User"
+    ref: "User",
+    required: true
   },
+
   meta: {
     createdAt: {
       type: Date,

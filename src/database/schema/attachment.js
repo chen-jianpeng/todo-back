@@ -24,7 +24,8 @@ const AttachmentSchema = new Schema({
   },
   project: {
     type: ObjectId,
-    ref: "Project"
+    ref: "Project",
+    required: true
   },
   task: {
     type: ObjectId,

@@ -12,7 +12,7 @@ const CommentSchema = new Schema({
       ref: "User"
     }
   ],
-  attachment: [
+  attachments: [
     {
       type: ObjectId,
       ref: "Attachment"

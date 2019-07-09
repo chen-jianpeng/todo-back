@@ -15,6 +15,13 @@ const ProjectSchema = new Schema({
     }
   ],
 
+  attachments: [
+    {
+      type: ObjectId,
+      ref: "Attachment"
+    }
+  ],
+
   creator: {
     type: ObjectId,
     ref: "User"
