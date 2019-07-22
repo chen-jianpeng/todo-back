@@ -125,7 +125,7 @@ export default {
       let attachment = await Attachment.findById(id);
 
       if (!attachment) {
-        return new Response(4001);
+        return new Response(4004);
       }
 
       /* if (attachment.project) {

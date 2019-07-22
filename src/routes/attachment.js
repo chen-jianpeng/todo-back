@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete } from "../decorator/router";
 import attachmentService from "../service/attachment";
 
-@Controller("/attachment")
+@Controller("/api/attachment")
 class AttachmentRouter {
   @Get("/")
   async getByQuery(ctx) {

@@ -1,7 +1,9 @@
-import { Controller, Get, Post } from "../decorator/router";
+import { Controller, Get, Post, Required } from "../decorator/router";
+import Response from "../lib/response";
+
 import userService from "../service/user";
 
-@Controller("/user")
+@Controller("/api/user")
 class UserRouter {
   @Get("/")
   async getUsers(ctx) {
@@ -25,15 +27,36 @@ class UserRouter {
     };
   }
 
-  @Post("")
+  @Post("/")
   async saveUser(ctx) {
     const params = ctx.request.body;
-    const user = await userService.saveUser(params);
+    const data = await userService.saveUser(params);
 
-    ctx.body = {
-      data: user,
-      success: true
-    };
+    ctx.body = data;
+  }
+
+  @Post("/login")
+  @Required({ body: ["email", "password"] })
+  async login(ctx) {
+    const params = ctx.request.body;
+    const res = await userService.login(params);
+
+    if (res.code === 2000) {
+      const userInfo = {
+        _id: res.data._id,
+        email: res.data.email,
+        name: res.data.name
+      };
+      ctx.session.user = userInfo;
+    }
+
+    ctx.body = res;
+  }
+
+  @Get("/logout")
+  logout(ctx) {
+    ctx.session = null;
+    ctx.body = Response(2000);
   }
 }
 

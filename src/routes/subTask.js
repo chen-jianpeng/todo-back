@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete } from "../decorator/router";
 import subTaskService from "../service/subTask";
 
-@Controller("/subTask")
+@Controller("/api/subTask")
 class SubTaskRouter {
   @Get("/")
   async getByQuery(ctx) {

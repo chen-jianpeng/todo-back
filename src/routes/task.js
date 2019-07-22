@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete } from "../decorator/router";
 import taskService from "../service/task";
 
-@Controller("/task")
+@Controller("/api/task")
 class taskRouter {
   @Get("/")
   async getByQuery(ctx) {
@@ -21,17 +21,19 @@ class taskRouter {
 
   @Post("")
   async save(ctx) {
+    const user = ctx.session.user;
     const params = ctx.request.body;
-    const data = await taskService.save(params);
+    const data = await taskService.save(params, user);
 
     ctx.body = data;
   }
 
   @Put("/:id")
   async update(ctx) {
+    const user = ctx.session.user;
     const id = ctx.params.id;
     const params = ctx.request.body;
-    const data = await taskService.update(id, params);
+    const data = await taskService.update(id, params, user);
 
     ctx.body = data;
   }

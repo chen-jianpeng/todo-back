@@ -1,6 +1,8 @@
 import koaBody from "koa-body";
 import { accessLogger, logger } from "../lib/log4";
 import session from "koa-session";
+import jwtKoa from "koa-jwt";
+import response from "../lib/response";
 
 const addBodyParser = app => {
   app.use(
@@ -37,8 +39,31 @@ const addSession = app => {
   app.use(session(CONFIG, app));
 };
 
+const addLoginFilter = app => {
+  app.use((ctx, next) => {
+    return next().catch(err => {
+      if (err.status === 401) {
+        ctx.status = 401;
+        ctx.body = new response(
+          4001,
+          err.originalError ? err.originalError.message : err.message
+        );
+      } else {
+        throw err;
+      }
+    });
+  });
+
+  app.use(
+    jwtKoa({ secret: "jwt:secret" }).unless({
+      path: [/^\/api\/user\/login/, /^\/api\/user\/register/, /^((?!\/api).)*$/]
+    })
+  );
+};
+
 export default app => {
   addBodyParser(app);
   addLog4(app);
   addSession(app);
+  addLoginFilter(app);
 };

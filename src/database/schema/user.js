@@ -3,9 +3,10 @@
  * https://www.mongodb.com/blog/search/bcrypt
  */
 
-const { Schema, model } = require("mongoose");
+import { Schema, model } from "mongoose";
+import bcrypt from "bcrypt";
+
 const { ObjectId } = Schema.Types;
-const bcrypt = require("bcrypt");
 
 const SALT_WORK_FACTOR = 10; // 密码加密权重值。越大越复杂，但会影响性能能。
 const MAX_LOGIN_ATTEMPTS = 5; // 最大错误次数
@@ -33,6 +34,7 @@ const UserSchema = new Schema({
   },
   password: {
     unique: true,
+    require: true,
     type: String
   },
   inLoginAttempts: {
@@ -74,9 +76,9 @@ UserSchema.pre("save", function(next) {
     bcrypt.hash(this.password, salt, (err, hash) => {
       if (err) return next(err);
       this.password = hash;
+      next();
     });
   });
-  next();
 });
 
 // 密码是否正确

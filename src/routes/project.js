@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete } from "../decorator/router";
 import projectService from "../service/project";
 
-@Controller("/project")
+@Controller("/api/project")
 class ProjectRouter {
   @Get("/")
   async getByQuery(ctx) {

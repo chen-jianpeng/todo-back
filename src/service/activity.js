@@ -39,10 +39,25 @@ export default {
    *
    * @param {*} params
    */
-  async save(params) {
-    let activity = new Activity(params);
-    let res = await activity.save();
-    return new Response(2000, res);
+  async save(oldObj, newObj = {}, type, user) {
+    let result = [];
+    try {
+      for (let key in newObj) {
+        let params = {
+          type,
+          target: key,
+          before: oldObj[key],
+          after: newObj[key],
+          creator: user._id
+        };
+        let activity = new Activity(params);
+        let res = await activity.save();
+        result.push(res);
+      }
+    } catch (error) {
+      logger.error(error);
+    }
+    return result;
   },
 
   /**
@@ -72,7 +87,7 @@ export default {
       let activity = await Activity.findById(id);
 
       if (!activity) {
-        return new Response(4001);
+        return new Response(4004);
       }
 
       if (activity.taskLists && activity.taskLists.length > 0) {

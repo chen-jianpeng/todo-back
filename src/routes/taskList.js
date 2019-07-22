@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Put, Delete } from "../decorator/router";
 import taskListService from "../service/taskList";
 
-@Controller("/taskList")
+@Controller("/api/taskList")
 class TaskListRouter {
   @Get("/")
   async getByQuery(ctx) {

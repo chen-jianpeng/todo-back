@@ -72,7 +72,7 @@ export default {
       let project = await Project.findById(id);
 
       if (!project) {
-        return new Response(4001);
+        return new Response(4004);
       }
 
       if (project.taskLists && project.taskLists.length > 0) {

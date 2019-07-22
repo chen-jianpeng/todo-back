@@ -91,7 +91,7 @@ export default {
       let taskList = await TaskList.findById(id);
 
       if (!taskList) {
-        return new Response(4001);
+        return new Response(4004);
       }
 
       if (taskList.tasks && taskList.tasks.length > 0) {

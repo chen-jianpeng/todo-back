@@ -89,7 +89,7 @@ export default {
       let subTask = await SubTask.findById(id);
 
       if (!subTask) {
-        return new Response(4001);
+        return new Response(4004);
       }
 
       // 删除子任务

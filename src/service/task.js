@@ -46,10 +46,11 @@ export default {
    *
    * @param {*} params
    */
-  async save(params) {
+  async save(params, user) {
     const session = await mongoose.startSession();
     await session.startTransaction();
     try {
+      params.creator = user._id;
       let task = new Task(params);
       let taskRes = await task.save();
       await TaskList.findByIdAndUpdate(params.taskList, {
@@ -67,10 +68,6 @@ export default {
     }
   },
 
-  async createActivity() {
-    // TODO
-  },
-
   /**
    *  更新
    *
@@ -78,19 +75,30 @@ export default {
    * @param {Object} params
    * @returns
    */
-  async update(id, params) {
+  async update(id, data, user) {
     let options = {
       runValidators: true,
       new: true
     };
 
     try {
-      let beforeTask = Task.findById(id);
-      let afterTask = await new Task(beforeTask).update(params, options);
+      let oldObj = await Task.findById(id);
+      if (!oldObj) {
+        return new Response(4004, id);
+      }
 
-      await this.createActivity(beforeTask, params);
+      // 增加活动记录
+      let res = await ActivityService.save(oldObj, data, "update", user);
+      let activities = res.map(item => item._id);
 
-      return new Response(2000, afterTask);
+      // 更新任务
+      let params = {
+        $addToSet: { activities }
+      };
+      Object.assign(params, data);
+      let newObj = await Task.findByIdAndUpdate(id, params, options);
+
+      return new Response(2000, newObj);
     } catch (error) {
       logger.error(error);
       return new Response(5000, error);
@@ -114,7 +122,7 @@ export default {
         afterTask = await new Task(beforeTask).update({ subTasks }, options);
       }
 
-      await this.createActivity(beforeTask, subTasks);
+      await ActivityService.save(beforeTask, subTasks);
 
       return new Response(2000, afterTask);
     } catch (error) {
@@ -137,7 +145,7 @@ export default {
       let task = await Task.findById(id);
 
       if (!task) {
-        return new Response(4001);
+        return new Response(4004);
       }
 
       // 删除子任务

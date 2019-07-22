@@ -65,11 +65,6 @@ export const Log = convert(async (ctx, next) => {
   await next();
 });
 
-/**
- * @Required({
- *   body: ['name', 'password']
- * })
- */
 export const Required = paramsObj =>
   convert(async (ctx, next) => {
     let errs = [];
