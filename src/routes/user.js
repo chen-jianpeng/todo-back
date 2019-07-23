@@ -27,7 +27,7 @@ class UserRouter {
     };
   }
 
-  @Post("/")
+  @Post("/register")
   async saveUser(ctx) {
     const params = ctx.request.body;
     const data = await userService.saveUser(params);

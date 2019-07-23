@@ -10,12 +10,18 @@ const TaskSchema = new Schema({
     type: Boolean,
     default: false
   },
-  deadline: Date,
+  deadline: {
+    type: Date,
+    default: null
+  },
   level: {
     type: Number,
     default: 0
   },
-  discription: String,
+  discription: {
+    type: String,
+    default: ""
+  },
   executors: [
     {
       type: ObjectId,

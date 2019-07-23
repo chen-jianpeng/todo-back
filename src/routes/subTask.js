@@ -21,8 +21,9 @@ class SubTaskRouter {
 
   @Post("")
   async save(ctx) {
+    const user = ctx.session.user;
     const params = ctx.request.body;
-    const data = await subTaskService.save(params);
+    const data = await subTaskService.save(params, user);
 
     ctx.body = data;
   }

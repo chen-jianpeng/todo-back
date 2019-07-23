@@ -5,23 +5,26 @@ const types = ["other", "create", "delete", "update", "search"];
 
 const ActivitySchema = new Schema({
   type: {
-    type: String,
-    required: true,
-    validate: {
-      validator: async function(type) {
-        return types.includes(type);
-      },
-      message: type => `活动类型出错。只能是${types}中的，当前为${type}`
-    }
+    key: {
+      type: String,
+      required: true,
+      validate: {
+        validator: async function(type) {
+          return types.includes(type);
+        },
+        message: type => `活动类型出错。只能是${types}中的，当前为${type}`
+      }
+    },
+    text: String
   },
   target: {
-    type: String,
-    required: true
+    key: String,
+    text: String
   },
   before: {
     type: String
   },
-  after: {
+  change: {
     type: String
   },
 

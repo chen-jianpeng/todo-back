@@ -37,10 +37,11 @@ export default {
    *
    * @param {*} params
    */
-  async save(params) {
+  async save(params, user) {
     const session = await mongoose.startSession();
     await session.startTransaction();
     try {
+      params.creator = user._id;
       let subTask = new SubTask(params);
       let subTaskRes = await subTask.save();
 

@@ -69,7 +69,7 @@ export default {
   },
 
   /**
-   *  更新
+   *  更新基础字段（非数组）
    *
    * @param {String} id
    * @param {Object} params
@@ -105,26 +105,34 @@ export default {
     }
   },
 
-  async updateSubTask(id, subTasks, isInsert = true) {
+  async updateArray(id, data, type, user) {
     let options = {
       runValidators: true,
       new: true
     };
 
     try {
-      let beforeTask = await Task.findById(id);
-      let afterTask;
-      if (isInsert) {
-        afterTask = await new Task(beforeTask).update({
-          $pull: { subTasks: { $in: subTasks } }
-        });
-      } else {
-        afterTask = await new Task(beforeTask).update({ subTasks }, options);
+      let oldObj = await Task.findById(id);
+      if (!oldObj) {
+        return new Response(4004, id);
       }
 
-      await ActivityService.save(beforeTask, subTasks);
+      // 增加活动记录
+      let res = await ActivityService.saveArrayItem(oldObj, data, type, user);
+      let activities = res.map(item => item._id);
 
-      return new Response(2000, afterTask);
+      // 更新任务
+      let params = {
+        $addToSet: { activities }
+      };
+      if (type === "create") {
+        params.$addToSet = data;
+      } else if (type === "delete") {
+        params.$pull = data;
+      }
+      let newObj = await Task.findByIdAndUpdate(id, params, options);
+
+      return new Response(2000, newObj);
     } catch (error) {
       logger.error(error);
       return new Response(5000, error);

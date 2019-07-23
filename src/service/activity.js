@@ -1,39 +1,31 @@
 import mongoose from "mongoose";
 import { logger } from "../lib/log4";
-import Response from "../lib/response";
 
 const Activity = mongoose.model("Activity");
 
+const TYPE_MAP = {
+  create: "新增",
+  delete: "删除",
+  update: "修改",
+  search: "查看",
+  other: "其他操作"
+};
+
+const TARGET_MAP = {
+  status: "状态",
+  deadline: "截至时间",
+  level: "优先级",
+  discription: "描述",
+  executors: "执行人",
+  followers: "关注人",
+  attachments: "附件",
+  comments: "评论",
+  subTasks: "子任务",
+  name: "任务内容",
+  taskList: "所属清单"
+};
+
 export default {
-  /**
-   * 根据条件查询
-   *
-   * @param {*} name
-   * @returns
-   */
-  async getByQuery(name) {
-    let query = {};
-    if (name) {
-      query.name = name;
-    }
-    const activitys = await Activity.find(query);
-    return new Response(2000, activitys);
-  },
-
-  /**
-   * 根据ID查询
-   *
-   * @param {*} id
-   * @returns
-   */
-  async getById(id) {
-    const activity = await Activity.findById(id)
-      .populate("taskLists")
-      .populate("attachments")
-      .populate("creator");
-    return new Response(2000, activity);
-  },
-
   /**
    * 保存
    *
@@ -44,10 +36,16 @@ export default {
     try {
       for (let key in newObj) {
         let params = {
-          type,
-          target: key,
+          type: {
+            key: type,
+            text: TYPE_MAP[type]
+          },
+          target: {
+            key: key,
+            text: TARGET_MAP[key]
+          },
           before: oldObj[key],
-          after: newObj[key],
+          change: newObj[key],
           creator: user._id
         };
         let activity = new Activity(params);
@@ -61,44 +59,47 @@ export default {
   },
 
   /**
-   *  更新
+   * 保存
    *
-   * @param {String} id
-   * @param {Object} params
-   * @returns
+   * @param {*} params
    */
-  async update(id, params) {
-    let options = {
-      runValidators: true,
-      new: true
+  async saveArrayItem(oldObj, newObj = {}, type, user) {
+    let result = [];
+    const serviceMap = {
+      executors: { key: "name", service: () => import("./user") },
+      followers: { key: "name", service: () => import("./user") },
+      attachments: { key: "name", service: () => import("./attachment") },
+      comments: { key: "content", service: () => import("./comments") },
+      subTasks: { key: "name", service: () => import("./subTask") }
     };
-    const activity = await Activity.findByIdAndUpdate(id, params, options);
-    return new Response(2000, activity);
-  },
-
-  /**
-   * 根据id删除
-   *
-   * @param {String} id
-   * @returns
-   */
-  async delete(id) {
     try {
-      let activity = await Activity.findById(id);
+      for (let key in newObj) {
+        let params = {
+          type: {
+            key: type,
+            text: TYPE_MAP[type]
+          },
+          target: {
+            key: key,
+            text: TARGET_MAP[key]
+          },
+          before: "",
+          change: "",
+          creator: user._id
+        };
 
-      if (!activity) {
-        return new Response(4004);
+        let id = newObj[key][0];
+        const service = await serviceMap[key].service();
+        const subRes = await service.default.getById(id);
+        params.change = subRes.data[serviceMap[key].key];
+
+        let activity = new Activity(params);
+        let res = await activity.save();
+        result.push(res);
       }
-
-      if (activity.taskLists && activity.taskLists.length > 0) {
-        return new Response(4002);
-      }
-
-      const removedActivity = await new Activity(activity).remove();
-      return new Response(2000, removedActivity);
     } catch (error) {
       logger.error(error);
-      return new Response(5000, error.message);
     }
+    return result;
   }
 };

@@ -1,4 +1,11 @@
-import { Controller, Get, Post, Put, Delete } from "../decorator/router";
+import {
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Required
+} from "../decorator/router";
 import taskService from "../service/task";
 
 @Controller("/api/task")
@@ -28,12 +35,25 @@ class taskRouter {
     ctx.body = data;
   }
 
-  @Put("/:id")
+  @Put("/basic/:id")
   async update(ctx) {
     const user = ctx.session.user;
     const id = ctx.params.id;
     const params = ctx.request.body;
     const data = await taskService.update(id, params, user);
+
+    ctx.body = data;
+  }
+
+  @Put("/list/:id")
+  @Required({ body: ["type"] })
+  async updateArray(ctx) {
+    const user = ctx.session.user;
+    const id = ctx.params.id;
+    const params = ctx.request.body;
+    const type = params.type;
+    delete params.type;
+    const data = await taskService.updateArray(id, params, type, user);
 
     ctx.body = data;
   }

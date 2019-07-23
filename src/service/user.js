@@ -59,13 +59,11 @@ export default {
         const secret = "jwt:secret";
         const token = jwt.sign(payload, secret, { expiresIn: "3600000ms" });
 
-        let res = {
-          _id: user._id,
-          name: user.name,
-          Email: user.email,
-          token
-        };
+        let res = { token };
+        Object.assign(res, user.toObject());
         delete res.password;
+        delete res.inLoginAttempts;
+
         return new Response(2000, res);
       } else {
         return new Response(4003);
