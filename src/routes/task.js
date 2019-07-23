@@ -47,13 +47,13 @@ class taskRouter {
 
   @Put("/list/:id")
   @Required({ body: ["type"] })
-  async updateArray(ctx) {
+  async updateList(ctx) {
     const user = ctx.session.user;
     const id = ctx.params.id;
     const params = ctx.request.body;
     const type = params.type;
     delete params.type;
-    const data = await taskService.updateArray(id, params, type, user);
+    const data = await taskService.updateList(id, params, type, user);
 
     ctx.body = data;
   }

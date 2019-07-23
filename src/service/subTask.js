@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { logger } from "../lib/log4";
 import Response from "../lib/response";
+import taskService from "./task";
 
 const SubTask = mongoose.model("SubTask");
 const Task = mongoose.model("Task");
@@ -45,9 +46,9 @@ export default {
       let subTask = new SubTask(params);
       let subTaskRes = await subTask.save();
 
-      await Task.findByIdAndUpdate(params.task, {
-        $addToSet: { subTasks: [subTaskRes._id] }
-      });
+      let data = { subTasks: [subTaskRes._id] };
+
+      await taskService.updateList(params.task, data, "create", user);
 
       await session.commitTransaction();
       session.endSession();

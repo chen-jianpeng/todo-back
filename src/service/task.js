@@ -105,7 +105,7 @@ export default {
     }
   },
 
-  async updateArray(id, data, type, user) {
+  async updateList(id, data, type, user) {
     let options = {
       runValidators: true,
       new: true
@@ -126,7 +126,7 @@ export default {
         $addToSet: { activities }
       };
       if (type === "create") {
-        params.$addToSet = data;
+        Object.assign(params.$addToSet, data);
       } else if (type === "delete") {
         params.$pull = data;
       }

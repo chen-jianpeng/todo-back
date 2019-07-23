@@ -39,7 +39,8 @@ export default {
    *
    * @param {*} params
    */
-  async save(params) {
+  async save(params, user) {
+    params.creator = user._id;
     let project = new Project(params);
     let res = await project.save();
     return new Response(2000, res);

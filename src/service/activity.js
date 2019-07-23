@@ -69,7 +69,7 @@ export default {
       executors: { key: "name", service: () => import("./user") },
       followers: { key: "name", service: () => import("./user") },
       attachments: { key: "name", service: () => import("./attachment") },
-      comments: { key: "content", service: () => import("./comments") },
+      comments: { key: "content", service: () => import("./comment") },
       subTasks: { key: "name", service: () => import("./subTask") }
     };
     try {

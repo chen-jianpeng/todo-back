@@ -21,8 +21,9 @@ class TaskListRouter {
 
   @Post("")
   async save(ctx) {
+    const user = ctx.session.user;
     const params = ctx.request.body;
-    const data = await taskListService.save(params);
+    const data = await taskListService.save(params, user);
 
     ctx.body = data;
   }

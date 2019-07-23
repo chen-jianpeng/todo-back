@@ -7,6 +7,7 @@ import { connect, initSchema } from "./database/init";
 import { resolve } from "path";
 import general from "./middleware/general";
 import { logger } from "./lib/log4";
+import config from "./config";
 
 const MIDDLEWARES = ["router"];
 
@@ -29,11 +30,9 @@ const useMiddlewares = app => {
 
   general(app);
 
-  const port = 17442;
-
   await useMiddlewares(app);
 
-  app.listen(port, () => {
-    logger.info(`Open ${chalk.green("http://localhost:" + port)}`);
+  app.listen(config.port, () => {
+    logger.info(`Open ${chalk.green("http://localhost:" + config.port)}`);
   });
 })();

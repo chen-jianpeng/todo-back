@@ -1,8 +1,11 @@
-import koaBody from "koa-body";
 import { accessLogger, logger } from "../lib/log4";
+import path from "path";
+import response from "../lib/response";
+
+import koaBody from "koa-body";
 import session from "koa-session";
 import jwtKoa from "koa-jwt";
-import response from "../lib/response";
+import koaStatic from "koa-static";
 
 const addBodyParser = app => {
   app.use(
@@ -61,9 +64,14 @@ const addLoginFilter = app => {
   );
 };
 
+const addStatic = app => {
+  app.use(koaStatic(path.join(__dirname, "../../upload")));
+};
+
 export default app => {
   addBodyParser(app);
   addLog4(app);
   addSession(app);
   addLoginFilter(app);
+  addStatic(app);
 };

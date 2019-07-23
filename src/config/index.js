@@ -1,1 +1,3 @@
-module.exports = {};
+export default {
+  port: 17442
+};

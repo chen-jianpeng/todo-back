@@ -40,10 +40,11 @@ export default {
    *
    * @param {*} params
    */
-  async save(params) {
+  async save(params, user) {
     const session = await mongoose.startSession();
     await session.startTransaction();
     try {
+      params.creator = user._id;
       let taskList = new TaskList(params);
       let taskListRes = await taskList.save();
       await Project.findByIdAndUpdate(params.project, {

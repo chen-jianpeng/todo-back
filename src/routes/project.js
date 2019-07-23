@@ -21,8 +21,9 @@ class ProjectRouter {
 
   @Post("")
   async save(ctx) {
+    const user = ctx.session.user;
     const params = ctx.request.body;
-    const data = await projectService.save(params);
+    const data = await projectService.save(params, user);
 
     ctx.body = data;
   }
